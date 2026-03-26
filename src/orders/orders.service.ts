@@ -23,6 +23,10 @@ export class OrdersService {
     private readonly orderAllocationRepo: Repository<OrderAllocation>,
   ) {}
 
+  private sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   async create(dto: CreateOrderDto) {
     const portfolio = await this.portfolioRepo.findOne({
       where: { portfolioCode: dto.portfolioCode },
@@ -83,6 +87,8 @@ export class OrdersService {
       const policyStocks = await this.policyStockRepo.find({
         where: { policy: { policyCode } },
       });
+
+      await this.sleep(5000);
 
       const allocations = policyStocks.map((ps) => {
         const amount = (order.amount * Number(ps.weight)) / 100;
